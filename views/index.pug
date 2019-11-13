@@ -1,0 +1,233 @@
+extends layout
+
+mixin deleteAct(id, act)
+  .modal.fade(id="deleteActivityModal" + act._id tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true")    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">删除活动</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        form(action=`/delete/${id}` method='post')
+          p.text-center 确认删除？
+          div.d-flex.justify-content-center.align-items-center
+            button.btn.btn-primary(type='submit') 提交
+      </div>
+    </div>
+
+mixin updateAct(id, act)
+  .modal.fade(id="updateActivityModal" + act._id tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true")
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">更新活动</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          form(action=`/update/${id}` method='post')
+            //- <div class="form-group row">
+            //-   <label for="name" class="col-sm-3 col-form-label">名称</label>
+            //-   <div class="col-sm-9">
+            //-     //- <input type="text" class="form-control" id="name" name="name" placeholder="Password">
+            //-     input.form-control#name(name='name' type='text' value=act.name)
+            //-   </div>
+            //- </div>
+            <div class="form-group row">
+              <label for="name" class="col-sm-3 col-form-label">名称</label>
+              <div class="col-sm-9">
+                input.form-control#name(type=text name='name' value=act.name)
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="startTime" class="col-sm-3 col-form-label">开始时间</label>
+              <div class="col-sm-9">
+                input.form-control#startTime(type=text name="startTime" value=act.startTime.toLocaleString('chinese', {hour12:false}))
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="endTime" class="col-sm-3 col-form-label">结束时间</label>
+              <div class="col-sm-9">
+                input.form-control#endTime(type=text name="endTime" value=act.endTime.toLocaleString('chinese', {hour12:false}))
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="place" class="col-sm-3 col-form-label">地点</label>
+              <div class="col-sm-9">
+                input.form-control#place(type=text name="place" value=act.place)
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="des" class="col-sm-3 col-form-label">描述</label>
+              <div class="col-sm-9">
+                input.form-control#des(type=text name="des" value=act.des)
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="organizer" class="col-sm-3 col-form-label">主办方</label>
+              <div class="col-sm-9">
+                input.form-control#organizer(type=text name="organizer" value=act.organizer.toString())
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="tag" class="col-sm-3 col-form-label">标签</label>
+              <div class="col-sm-9">
+                input.form-control#tag(type=text name="tag" value=act.tag.toString())
+              </div>
+            </div>
+            div.d-flex.justify-content-center.align-items-center
+              button.btn.btn-primary(type='submit') 提交
+        </div>
+      </div>
+    </div>
+
+block content
+  header.mb-4
+    p header here.
+  .container#content
+    div
+      button.btn.btn-primary.mb-3.mr-3(data-toggle='modal' data-target='#newActivityModal') 新建活动
+      button.btn.btn-primary.mb-3.mr-3(data-toggle='modal' data-target='#clearActivityModal') 清空活动
+      button.btn.btn-primary.mb-3.mr-3(id='conflictTest') 检测冲突
+      .alert.alert-primary.d-none#confictResult(role='alert') test
+    <div class="modal fade" id="newActivityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">新建活动</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            form(action="/addOne" method='post')
+              <div class="form-group row">
+                <label for="name" class="col-sm-3 col-form-label">名称</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="经验分享会">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="startTime" class="col-sm-3 col-form-label">开始时间</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="startTime" name="startTime" placeholder="2019-11-10 11:10">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="endTime" class="col-sm-3 col-form-label">结束时间</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="endTime" name="endTime" placeholder="2019-11-10 13:30">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="place" class="col-sm-3 col-form-label">地点</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="place" name="place" placeholder="3A212">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="des" class="col-sm-3 col-form-label">描述</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="des" name="des" placeholder="这是一个分享会">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="organizer" class="col-sm-3 col-form-label">主办方</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="organizer" name="organizer" placeholder="学生会，某社团">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="tag" class="col-sm-3 col-form-label">标签</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="tag" name="tag" placeholder="分享会">
+                </div>
+              </div>
+              div.d-flex.justify-content-center.align-items-center
+                button.btn.btn-primary(type='submit') 提交
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="clearActivityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">清空活动</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            form(action="/deleteAll" method='post')
+              p.text-center 确认清空？
+              div.d-flex.justify-content-center.align-items-center
+                button.btn.btn-primary(type='submit') 提交
+          </div>
+        </div>
+      </div>
+    </div>
+    table.table.table-hover
+      thead
+        tr
+          th(scope='col') #
+          th(scope='col') 名称
+          th(scope='col') 开始时间
+          th(scope='col') 结束时间
+          th(scope='col') 地点
+          th(scope='col') 主办方
+          th(scope='col') 标签
+          th(scope='col') 描述
+          th(scope='col') 操作
+      tbody
+        each act, index in activities
+          tr.act-list
+            th(scope='row')= index
+            td= act.name
+            td= act.startTime.toLocaleString('chinese', {hour12:false})
+            td= act.endTime.toLocaleString('chinese', {hour12:false})
+            td= act.place
+            td= act.organizer.toString()
+            td= act.tag.toString()
+            td= act.des
+            td
+              button.btn.mr-1(data-toggle='modal' data-target='#updateActivityModal' + act._id) 
+                i.fa.fa-pencil-square-o.text-primary
+              +updateAct(act._id, act)
+              
+              button.btn.mr-1(data-toggle='modal' data-target='#deleteActivityModal' + act._id) 
+                i.fa.fa-trash-o.text-primary
+              +deleteAct(act._id, act)
+  footer.mt-4
+    p footer here
+  script.
+    $(document).ready(function(){
+      let starts = [];
+      let ends = [];
+      $('tr.act-list td:nth-child(3)').each(function(){
+        starts.push(new Date($(this).text()).getTime());
+      })
+      $('tr.act-list td:nth-child(4)').each(function(){
+        ends.push(new Date($(this).text()).getTime());
+      })
+      $('#conflictTest').on('click', function(){
+        var i;
+        for(i = 1; i < starts.length; i++){
+          if(starts[i] < ends[i-1]){
+            console.log('confict in ' + new Date(starts[i]).toLocaleString('chinese', {hour12: false}))
+            $('#confictResult').removeClass('d-none')
+              .html('Confict in ' + new Date(starts[i]).toLocaleString('chinese', {hour12: false}));
+            break;
+          }
+        }
+        if(i === starts.length){
+          $('#confictResult').removeClass('d-none')
+            .html('No Conflicts.');
+        }
+      })
+    })
+    
+  
