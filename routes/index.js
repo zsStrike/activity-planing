@@ -4,17 +4,27 @@ var router = express.Router();
 var path = require('path');
 var app = require('../app');
 
-var userAuth = false;
+var userAuth = true;
 
 /* GET home page. */
 router.get('/home', function(req, res, next) {
-  if(!userAuth){
-    res.redirect('/login');
-  }
   activities = Activity.findCustom({}, function(activities){
     res.render('home');
   });
 });
+
+router.get('/table', function(req, res, next) {
+  res.render('table');
+});
+
+router.post('/getTable', function(req, res, next){
+  Activity.getWeekCoursesList(undefined, function(courseList){
+    let week = Activity.getWeek();
+    let courseType = Activity.getCourseType();
+    // console.log(courseList, week, courseType);
+    res.json({courseList, courseType, week});
+  })
+})
 
 router.get('/login', function(req, res, next){
   res.render('login');
@@ -31,13 +41,16 @@ router.post('/login', function(req, res, next){
 });
 
 router.post('/addOne', function(req, res, next) {
-  console.log(req.params, req.body);
-  var activity = req.body;
-  // activity.startTime = new Date(Activity.timeTrans(activity.startTime));
-  // activity.endTime = new Date(Activity.timeTrans(activity.endTime));
-  // activity.organizer = activity.organizer.split(/[,，]\s*/);
-  // activity.tag = activity.tag.split(/[,，]\s*/);
-  // Activity.addOneCustom(activity);
+  console.log(req.body);
+  var data = req.body;
+  var activity = {};
+  activity.startTime = new Date(data.startDate);
+  activity.endTime = new Date(data.endDate);
+  activity.organizer = data.actOrg;
+  activity.name = data.actName;
+  activity.place = data.actPlace;
+  activity.des = data.actDes;
+  Activity.addOneCustom(activity);
   res.send('/home');
 });
 
@@ -58,11 +71,14 @@ router.post('/update/:id', function(req, res, next){
   })
 })
 
-router.post('/delete/:id', function(req, res, next){
-  Activity.deleteOneCustom({_id: req.params.id}, function(){
-    res.redirect('/');
+router.post('/delete/:name', function(req, res, next){
+  Activity.deleteOneCustom({name: req.params.name}, function(){
+    console.log(req.params)
+    res.send('delete done')
   })
 });
+
+
 
 
 

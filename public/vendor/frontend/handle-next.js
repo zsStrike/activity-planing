@@ -20,6 +20,8 @@ $(document).ready(function(){
       endTime = $('.available-hours-end span.selected-hour').text().trim().match(/(\d+):(\d+)/);
       console.log(new Date(startDate.setHours(startTime[1], startTime[2])).toLocaleString("chinese", {hour12: false}));
       console.log(new Date(endDate.setHours(endTime[1], endTime[2])).toLocaleString("chinese", {hour12: false}));
+      updateInfo(actName, actPlace, startDate.toLocaleString("chinese", {hour12: false}), 
+                endDate.toLocaleString("chinese", {hour12: false}), actOrg, actDes);
     }
     let next_frame = $('#wizard-frame-' + next_index);
     current_frame.addClass('d-none');
@@ -29,12 +31,14 @@ $(document).ready(function(){
     // console.log(current_frame);
   });
 
+
+
   $('#act-confirm').on('click', function(){
     $.ajax({
       url: '/addOne',
       type: 'post',
       data: {
-        actName,actOrg,actPlace,actDes,startDate,startTime,endDate,endTime
+        actName, actOrg, actPlace, actDes, startDate, endDate
       },
       success: function(res){
         window.location.href = res;
@@ -58,4 +62,60 @@ $(document).ready(function(){
     $('.available-hours-end span.selected-hour').removeClass('selected-hour');
     $(this).addClass('selected-hour');
   });
+
+  function updateInfo(name, place, start, end, org, des){
+    $('[data-actName]').text('Name: ' + name);
+    $('[data-actPlace]').text('Place: ' + place);
+    $('[data-actStartTime]').text('Start Time: ' + start);
+    $('[data-actEndTime]').text('End Time: ' + end);
+    $('[data-actOrg]').text('Organizer: ' + org);
+    $('[data-actDes]').text('Description: ' + des);
+  }
+
+  $('#delete-btn').on('click', function(){
+    let name = $('#delete-name').text();
+    name = name.substring(0, name.indexOf('@'));
+    $.ajax({
+      url: `/delete/${name}`,
+      type: 'post',
+      success: function(res){
+        console.log(res);
+        window.location.href = '/table';
+      },
+      error: function(err){
+        return console.log(err);
+      }
+    })
+  });
+
+  window.onload = function(){
+    $.ajax({
+      url: '/getTable',
+      type: 'post',
+      success: function(res){
+        var Timetable = new Timetables({
+          el: '#coursesTable',
+          timetables: res.courseList,
+          week: res.week,
+          timetableType: res.courseType,
+          gridOnClick: function (e) {
+            if(!e.name){
+              return;
+            }
+            //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
+            //- $('#act-info').text(e.name);
+            $('#delete-name').text(e.name);
+            $('#exampleModal').modal('show');
+            console.log(e)
+          },
+          styles:{
+            Gheight: 25
+          }
+        });
+      },
+      error: function(err){
+        console.log(err);
+      }
+    });
+  }
 });
