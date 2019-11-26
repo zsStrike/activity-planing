@@ -91,6 +91,8 @@ $(document).ready(function(){
     })
   });
 
+
+
   $('#nextweek-btn').on('click', function(){
     currentDate.addDays(7);
     getTable('update');
@@ -117,6 +119,25 @@ $(document).ready(function(){
     })
   }
 
+  function setWeekDate(){
+    // console.log(currentDate);
+    let date = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    date.addDays(- date.getDay() + 1);
+    // console.log(date.toLocaleString('chinese', {hour12: false}));
+    // console.log(date);
+    let i = 0;
+    $('.Courses-head > div').each(function(){
+      let date2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      date2.addDays(i);
+      // console.log(date2);
+      let str = $(this).html();
+      str += '';
+      str += `${date2.getMonth() + 1}/${date2.getDate()}`;
+      $(this).html(str);
+      i++;
+    })
+  }
+
   function getTable(update){
     $.ajax({
       url: '/getTable',
@@ -131,6 +152,7 @@ $(document).ready(function(){
             week: res.week,
             timetableType: res.courseType
           });
+          setWeekDate();
         }else{
           Timetable = new Timetables({
             el: '#coursesTable',
@@ -160,6 +182,7 @@ $(document).ready(function(){
               Gheight: 25
             }
           });
+          setWeekDate();
         }
       },
       error: function(err){
