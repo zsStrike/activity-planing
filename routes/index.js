@@ -18,7 +18,8 @@ router.get('/table', function(req, res, next) {
 });
 
 router.post('/getTable', function(req, res, next){
-  Activity.getWeekCoursesList(undefined, function(courseList){
+  console.log(req.body, req.params);
+  Activity.getWeekCoursesList(new Date(req.body.currentDate), function(courseList){
     let week = Activity.getWeek();
     let courseType = Activity.getCourseType();
     // console.log(courseList, week, courseType);
@@ -74,7 +75,7 @@ router.post('/update/:id', function(req, res, next){
 router.post('/delete/:name', function(req, res, next){
   Activity.deleteOneCustom({name: req.params.name}, function(){
     console.log(req.params)
-    res.send('delete done')
+    res.redirect('/table');
   })
 });
 

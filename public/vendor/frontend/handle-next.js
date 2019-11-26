@@ -1,5 +1,7 @@
 $(document).ready(function(){
   let actName, actOrg, actDes, actPlace, startDate, startTime, endDate, endTime;
+  let currentDate = new Date();
+  var Timetable = null;
   $('button[data-step_index]').on('click', function(){
     let index = parseInt($(this).attr('data-step_index'));
     let current_frame = $('#wizard-frame-' + index);
@@ -80,7 +82,8 @@ $(document).ready(function(){
       type: 'post',
       success: function(res){
         console.log(res);
-        window.location.href = '/table';
+        $('#exampleModal').modal('hide');
+        getTable('update');
       },
       error: function(err){
         return console.log(err);
@@ -88,30 +91,65 @@ $(document).ready(function(){
     })
   });
 
-  window.onload = function(){
+  $('#nextweek-btn').on('click', function(){
+    currentDate.addDays(7);
+    getTable('update');
+  })
+
+  $('#lastweek-btn').on('click', function(){
+    currentDate.addDays(-7);
+    getTable('update');
+  })
+
+  getTable();
+  function getTable(update){
     $.ajax({
       url: '/getTable',
       type: 'post',
+      data: {
+        currentDate
+      },
       success: function(res){
-        var Timetable = new Timetables({
-          el: '#coursesTable',
-          timetables: res.courseList,
-          week: res.week,
-          timetableType: res.courseType,
-          gridOnClick: function (e) {
-            if(!e.name){
-              return;
+        if(update){
+          Timetable.setOption({
+            timetables: res.courseList,
+            week: res.week,
+            timetableType: res.courseType,
+            gridOnClick: function (e) {
+              if(!e.name){
+                return;
+              }
+              //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
+              //- $('#act-info').text(e.name);
+              $('#delete-name').text(e.name);
+              $('#exampleModal').modal('show');
+              console.log(e)
+            },
+            styles:{
+              Gheight: 25
             }
-            //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
-            //- $('#act-info').text(e.name);
-            $('#delete-name').text(e.name);
-            $('#exampleModal').modal('show');
-            console.log(e)
-          },
-          styles:{
-            Gheight: 25
-          }
-        });
+          });
+        }else{
+          Timetable = new Timetables({
+            el: '#coursesTable',
+            timetables: res.courseList,
+            week: res.week,
+            timetableType: res.courseType,
+            gridOnClick: function (e) {
+              if(!e.name){
+                return;
+              }
+              //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
+              //- $('#act-info').text(e.name);
+              $('#delete-name').text(e.name);
+              $('#exampleModal').modal('show');
+              console.log(e)
+            },
+            styles:{
+              Gheight: 25
+            }
+          });
+        }
       },
       error: function(err){
         console.log(err);
