@@ -70,6 +70,15 @@ function findCustom(options, callback){
   })
 }
 
+function getOneByName(options, callback){
+  Activity.findOne(options, function(err, res){
+    if(err){
+      return console.log('[mongoose]: err when getOneByName');
+    }
+    callback(res);
+  })
+}
+
 function deleteCustom(options, callback){
   Activity.deleteMany(options, function(err){
     if(err) return console.log('[mongoose]: err when deteteAll.');
@@ -168,4 +177,5 @@ module.exports = {
   getWeekCoursesList,
   getCourseType,
   getWeek,
+  getOneByName,
 }

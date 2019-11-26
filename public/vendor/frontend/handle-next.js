@@ -81,7 +81,7 @@ $(document).ready(function(){
       url: `/delete/${name}`,
       type: 'post',
       success: function(res){
-        console.log(res);
+        // console.log(res);
         $('#exampleModal').modal('hide');
         getTable('update');
       },
@@ -102,6 +102,21 @@ $(document).ready(function(){
   })
 
   getTable();
+
+
+  function getOneActivityByName(name, callback){
+    $.ajax({
+      url: `/getOne/${name}`,
+      type: 'post',
+      success: function(res){
+        callback(res);
+      },
+      error: function(err){
+        console.log(err);
+      }
+    })
+  }
+
   function getTable(update){
     $.ajax({
       url: '/getTable',
@@ -114,20 +129,7 @@ $(document).ready(function(){
           Timetable.setOption({
             timetables: res.courseList,
             week: res.week,
-            timetableType: res.courseType,
-            gridOnClick: function (e) {
-              if(!e.name){
-                return;
-              }
-              //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
-              //- $('#act-info').text(e.name);
-              $('#delete-name').text(e.name);
-              $('#exampleModal').modal('show');
-              console.log(e)
-            },
-            styles:{
-              Gheight: 25
-            }
+            timetableType: res.courseType
           });
         }else{
           Timetable = new Timetables({
@@ -139,11 +141,20 @@ $(document).ready(function(){
               if(!e.name){
                 return;
               }
-              //- alert(e.name + '  ' + e.week +', 第' + e.index + '节课, 课长' + e.length +'节')
-              //- $('#act-info').text(e.name);
-              $('#delete-name').text(e.name);
-              $('#exampleModal').modal('show');
-              console.log(e)
+              getOneActivityByName(e.name.substring(0, e.name.indexOf('@')), function(res){
+                let content = '';
+                content += `<h4 class="text-center text-primary">Activity Info</h4>`
+                content += `<p>Name: ${res.name}</p>`;
+                content += `<p>Place: ${res.place}</p>`;
+                content += `<p>Start Time: ${new Date(res.startTime).toLocaleString('chinese', {hour12: false})}</p>`;
+                content += `<p>End Time: ${new Date(res.endTime).toLocaleString('chinese', {hour12: false})}</p>`;
+                content += `<p>Organizer: ${res.organizer}</p>`;
+                content += `<p>Description: ${res.des}</p>`;
+                $('#act-info-modal').html(content);
+                $('#delete-name').text(e.name);
+                $('#exampleModal').modal('show');
+                console.log(res)
+              })
             },
             styles:{
               Gheight: 25

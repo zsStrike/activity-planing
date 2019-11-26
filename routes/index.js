@@ -75,9 +75,15 @@ router.post('/update/:id', function(req, res, next){
 router.post('/delete/:name', function(req, res, next){
   Activity.deleteOneCustom({name: req.params.name}, function(){
     console.log(req.params)
-    res.redirect('/table');
+    res.send();
   })
 });
+
+router.post('/getOne/:name', function(req, res, next){
+  Activity.getOneByName({name: req.params.name}, function(act){
+    res.json(act);
+  })
+})
 
 
 
