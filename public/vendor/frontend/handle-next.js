@@ -138,6 +138,8 @@ $(document).ready(function(){
     })
   }
 
+
+
   function getTable(update){
     $.ajax({
       url: '/getTable',
@@ -174,6 +176,10 @@ $(document).ready(function(){
                 content += `<p>Description: ${res.des}</p>`;
                 $('#act-info-modal').html(content);
                 $('#delete-name').text(e.name);
+                
+                if($('[data-userAuth]').attr('data-userauth') == 'false'){
+                  $('.userOp').addClass('d-none');
+                }
                 $('#exampleModal').modal('show');
                 console.log(res)
               })

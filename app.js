@@ -7,6 +7,8 @@ var logger = require('morgan');
 var db = require('./mongodb/index')
 var mongoose = require('mongoose');
 var activitySchema = require('./mongodb/schemas/activity');
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
 
 // var Activity = mongoose.model('Activity', activitySchema);
 
@@ -48,7 +50,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(cookieParser('secret'));
+app.use(session({
+  cookie: {
+    path: '/',
+    signed: true,
+    maxAge: 100000
+  },
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true,
+  rolling: false,
+  // store: new FileStore()
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);

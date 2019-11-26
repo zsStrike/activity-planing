@@ -6,6 +6,16 @@ var app = require('../app');
 
 var userAuth = true;
 
+router.use(function(req, res, next){
+  console.log(req.session);
+  next();
+})
+
+router.get('/home', function(req, res, next){
+  if(!req.session.auth) res.redirect('/login');
+  else next();
+})
+
 /* GET home page. */
 router.get('/home', function(req, res, next) {
   activities = Activity.findCustom({}, function(activities){
@@ -14,7 +24,8 @@ router.get('/home', function(req, res, next) {
 });
 
 router.get('/table', function(req, res, next) {
-  res.render('table');
+  let userAuth = req.session.auth ? "true" : "false";
+  res.render('table', {userAuth});
 });
 
 router.post('/getTable', function(req, res, next){
@@ -28,16 +39,20 @@ router.post('/getTable', function(req, res, next){
 })
 
 router.get('/login', function(req, res, next){
-  res.render('login');
+  let msg = req.session.wp ? "Wrong Password" : "";
+  res.render('login', {msg});
 });
 
 router.post('/login', function(req, res, next){
-  if(req.body.loginUsername === '123456' && req.body.loginPassword === '123456'){
-    userAuth = true;
+  if(req.body.loginUsername === 'admin' && req.body.loginPassword === 'password'){
+    req.session.auth = true;
+    req.session.wp = false;
+    req.session.cookie.auth = true;
     res.redirect('/home');
   }else{
-    userAuth = false;
-    res.render('login', {msg: 'Wrong Password'});
+    req.session.auth = false;
+    req.session.wp = true;
+    res.redirect('/login');
   }
 });
 
