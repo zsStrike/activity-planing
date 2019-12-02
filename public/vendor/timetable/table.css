@@ -22,6 +22,7 @@
 }
 .Courses-leftHand .left-hand-name{
   color: #666;
+  margin-top: -15px !important;
 }
 .Courses-leftHand p {
   text-align: center;

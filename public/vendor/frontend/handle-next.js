@@ -33,6 +33,11 @@ $(document).ready(function(){
     // console.log(current_frame);
   });
 
+  
+  function setLeftHandNameTop(){
+    $('.left-hand-name').css('margin-top', '-14px');
+    $('.left-hand-name').css('color', '#f60');
+  }
 
 
   $('#act-confirm').on('click', function(){
@@ -104,7 +109,7 @@ $(document).ready(function(){
   })
 
   getTable();
-
+  // setLeftHandNameTop();
 
   function getOneActivityByName(name, callback){
     $.ajax({
@@ -196,4 +201,6 @@ $(document).ready(function(){
       }
     });
   }
+
+
 });
