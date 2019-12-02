@@ -143,6 +143,19 @@ $(document).ready(function(){
     })
   }
 
+  function setHoverLength(act_len){
+    $('span.course-hasContent').each(function(){
+      $(this).on('mouseenter', function(){
+        // console.log('enter')
+        $(this).css('height', 25 * act_len[$(this).text()] + 'px');
+        $(this).css('z-index', '10');
+      });
+      $(this).on('mouseleave', function(){
+        // console.log('leave')
+        $(this).css('z-index', '9');
+      })
+    })
+  }
 
 
   function getTable(update){
@@ -159,13 +172,13 @@ $(document).ready(function(){
             week: res.week,
             timetableType: res.courseType
           });
-          setWeekDate();
         }else{
           Timetable = new Timetables({
             el: '#coursesTable',
             timetables: res.courseList,
             week: res.week,
             timetableType: res.courseType,
+            merge: true,
             gridOnClick: function (e) {
               if(!e.name){
                 return;
@@ -193,8 +206,9 @@ $(document).ready(function(){
               Gheight: 25
             }
           });
-          setWeekDate();
         }
+        setWeekDate();
+        setHoverLength(res.act_len);
       },
       error: function(err){
         console.log(err);

@@ -37,6 +37,8 @@ var courseType = [
 
 var week = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
+var act_len = {};
+
 var Activity = mongoose.model('Activity', activitySchema);
 
 var courseList = new Array(7);
@@ -138,6 +140,7 @@ function getWeekCoursesList(startTime, callback){
       for (let n = 1; n < m; n++) {
         courseList[j][k + n] = courseList[j][k];    
       }
+      act_len[element.name + '@' + element.place] = m;
     }
     for (let i = 0; i < 7; i++) {
       for (let j = 0; j < 30; j++) {
@@ -146,8 +149,8 @@ function getWeekCoursesList(startTime, callback){
         } 
       }
     }
-    // console.log(courseList);
-    callback(courseList);
+    // console.log(act_len);
+    callback(courseList, act_len);
   })
 }
 

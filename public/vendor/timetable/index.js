@@ -73,6 +73,7 @@
         });
       });
 
+      // console.log('Timetables: ', Timetables);
       var listMerge = [];
       if (merge) {
         Timetables.forEach(function(list, i) {
@@ -80,6 +81,7 @@
             listMerge[i] = [];
           }
           list.forEach(function(item, index) {
+            // console.log(item,index);
             if (!index) {
               return listMerge[i].push({name: item, length: 1});
             }
@@ -155,6 +157,7 @@
             }
             mergeDom.innerText = listMerge[i][index].name;
             mergeDom.className = 'course-hasContent'
+            // console.log(mergeDom.innerText, listMerge[i][index].length);
             courseItem.appendChild(mergeDom);
           } else {
             if (merge && listMerge[i][index].length === 0) {

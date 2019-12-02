@@ -30,11 +30,11 @@ router.get('/table', function(req, res, next) {
 
 router.post('/getTable', function(req, res, next){
   console.log(req.body, req.params);
-  Activity.getWeekCoursesList(new Date(req.body.currentDate), function(courseList){
+  Activity.getWeekCoursesList(new Date(req.body.currentDate), function(courseList, act_len){
     let week = Activity.getWeek();
     let courseType = Activity.getCourseType();
     // console.log(courseList, week, courseType);
-    res.json({courseList, courseType, week});
+    res.json({courseList, act_len, courseType, week});
   })
 })
 
