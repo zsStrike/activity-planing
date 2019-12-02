@@ -119,13 +119,13 @@ function getWeekCoursesList(startTime, callback){
   let end = start.clone();
   end.addDays(7);
   // console.log('test:', start.toLocaleString("chinese"), end);
-  Activity.find({"startTime": {"$gt": start}, "endTime": {"$lt": end}},function(err, res){
+  Activity.find().sort().exec()
+  Activity.find({"startTime": {"$gt": start}, "endTime": {"$lt": end}}).sort({'startTime': 1}).exec(function(err, res){
     if(err){
       return console.log('[mongoose]: err when getWeekCourseList.');
     }
     // console.log(res, '\n');
     // console.log(start.toLocaleString("chinese", {hour12: false}), end.toLocaleString("chinese", {hour12: false}));
-    
     for (let i = 0; i < res.length; i++) {
       const element = res[i];
       // console.log(element.startTime.toLocaleString("chinese", {hour12: false}), start.toLocaleString("chinese", {hour12: false}));

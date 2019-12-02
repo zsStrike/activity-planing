@@ -144,16 +144,31 @@ $(document).ready(function(){
   }
 
   function setHoverLength(act_len){
+    let flags = {};
     $('span.course-hasContent').each(function(){
-      $(this).on('mouseenter', function(){
-        // console.log('enter')
+      if(!flags[$(this).text()]){
         $(this).css('height', 25 * act_len[$(this).text()] + 'px');
-        $(this).css('z-index', '10');
-      });
-      $(this).on('mouseleave', function(){
-        // console.log('leave')
-        $(this).css('z-index', '9');
-      })
+        $(this).on('mouseenter', function(){
+          // console.log('enter')
+          $(this).css('z-index', '10');
+        });
+        $(this).on('mouseleave', function(){
+          // console.log('leave')
+          $(this).css('z-index', '9');
+        })
+        flags[$(this).text()] = true;
+        $(this).addClass($(this).text().substring(0, $(this).text().indexOf('@')) + '_hover');
+      }else{
+        console.log('hello')
+        $(this).on('mouseenter', function(){
+          // $(this).css('z-index', '10');
+          $('span.' +$(this).text().substring(0, $(this).text().indexOf('@')) + '_hover').css('z-index', '10');
+        });
+        $(this).on('mouseleave', function(){
+          $('span.' + $(this).text().substring(0, $(this).text().indexOf('@')) + '_hover').css('z-index', '9');
+          // $(this).css('z-index', '9');
+        })
+      }
     })
   }
 

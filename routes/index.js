@@ -28,6 +28,11 @@ router.get('/table', function(req, res, next) {
   res.render('table', {userAuth});
 });
 
+router.get('/logout', function(req, res, next){
+  req.session.auth = false;
+  res.redirect('table');
+})
+
 router.post('/getTable', function(req, res, next){
   console.log(req.body, req.params);
   Activity.getWeekCoursesList(new Date(req.body.currentDate), function(courseList, act_len){
