@@ -11,6 +11,10 @@ router.use(function(req, res, next){
   next();
 })
 
+router.get('/', function(req, res, next){
+  res.redirect('/table');
+});
+
 router.get('/home', function(req, res, next){
   if(!req.session.auth) res.redirect('/login');
   else next();
