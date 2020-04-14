@@ -1,4 +1,5 @@
 var express = require('express');
+var db = require('../mongodb');
 var Activity = require('../mongodb/models/activity');
 var router = express.Router();
 var path = require('path');

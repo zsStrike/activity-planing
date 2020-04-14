@@ -1,5 +1,11 @@
-#node modules
+# node modules
 node_modules/
 
 # editor
 .vscode
+
+# secret
+SECRET.json
+
+# tmp file
+sessions

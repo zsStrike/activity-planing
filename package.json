@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "SET DEBUG=activity-planing:* & nodemon ./bin/www"
+    "test": "DEBUG=activity-planing:* & nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
